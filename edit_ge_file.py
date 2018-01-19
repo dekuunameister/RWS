@@ -28,7 +28,6 @@ def main():
 	""" SPECIFY ONE FILE TO EDIT FOR NOW """
 	# path = 'Y:/GEROOFTOP/ForExport/Temp/'
 	path = 'Y:/GESPOOFTOP/'
-	
 	# Open the file as a regular file instead of a CSV because the 
 	# format of the GE CSV file is all messed up
 	files = glob.glob(path+'*')
@@ -38,14 +37,20 @@ def main():
 	filename_datetime = os.path.basename(newest)[9:-4]
 	print("date and time from file", filename_datetime)
 	
-	year, month, day, hour, min = filename_datetime.split('_')
-	filename_time_str = (year + '-' + month + '-' + day + ' ' + hour + ':' + min)
+	ymd, hm = filename_datetime.split('_')
+	year = ymd[:4]
+	month = ymd[4:6]
+	day = ymd[6:8]
+	hour = hm[:2]
+	min = hm[2:4]
+	filename_time_str = (year + '-' + month + '-' + day + ' ' + hour + ':' + min + ':00')
 	print ("what's this", year, month, day, hour, min)
 	# print("does this work?", dt.strptime(filename_time_str, '%Y-%m-%d %H:%M:%S'))
 
 	# create a datetime object from the parsed filename
 	time_modified = dt(int(year), int(month), int(day), int(hour), int(min))
-
+	file_time = dt(2000, 1, 1)
+	
 	value = ''
 	margin = datetime.timedelta(minutes=10)
 	with open(newest, 'r+') as file:
@@ -63,7 +68,7 @@ def main():
 		print("file being rewritten")
 		with open(newest, 'w') as file:
 			# try to rewrite the file
-			file.write('\0\0\0' + time_modified_str + ',' + value + '\n')
+			file.write('\0\0\0' + filename_time_str + ',' + value + '\n')
 
 
 if __name__ == '__main__':
